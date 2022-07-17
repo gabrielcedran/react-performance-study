@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { AddProductToWishListProps } from "./AddProductToWishList";
+import lodash from 'lodash';
 
 const AddProductToWishList = dynamic<AddProductToWishListProps>(() => { // it is necessary to pass the generic so that typescript can assist with the props the component receives
     return import('./AddProductToWishList') 
@@ -21,7 +22,7 @@ type ProductItemProps = {
     onAddToWishList: (id: number) => void;
 }
 
-export function ProductItem({product, onAddToWishList}: ProductItemProps) {
+function ProductItemComponent({product, onAddToWishList}: ProductItemProps) {
 
     const [addingToWishList, setAddingToWishList] = useState(false)
 
@@ -39,3 +40,7 @@ export function ProductItem({product, onAddToWishList}: ProductItemProps) {
         </div>
     )
 }
+
+export const ProductItem = memo(ProductItemComponent, (prevProps, nextProps) => {
+    return lodash.isEqual(prevProps, nextProps);
+})

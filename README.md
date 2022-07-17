@@ -291,3 +291,13 @@ import { List, ListRowRenderer } from "react-virtualized";
 
 
 When it is not possible to predict the height of the list (because you want it to take the full height), use the `AutoSizer` component from the lib.
+
+
+### Bundle Analyzer
+
+Bundler analyzes help you to identify what might be causing the bundled file to end up too big.
+
+Lodash is a very popular lib that provides a great variety of funcionalities. For the sake of example it will be used.
+
+https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer
+
