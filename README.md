@@ -260,3 +260,34 @@ async function showFormattedDate() {
 }
 
 ```
+
+### Virtualization
+
+When there is a massive number of elements to dispay on the ui (list, table, or any other structure) not only it is costly for react but it is also heavy for the browser.
+In such situations, most of the users won't go though a fraction of the available data. 
+
+To reduce the burden, it is possible to use the concept of virtualization. This concept allows to only add elements to the html (DOM) that are in fact visible on the screen / browser.
+
+There are some libs that helps with the implementation of this concept - to avoid having to develop everything from scratch (or reinvent the wheel).
+
+`yarn add react-virtualized`
+
+
+Example:
+
+```
+import { List, ListRowRenderer } from "react-virtualized";
+
+<List 
+    height={300}
+    rowHeight={30}
+    width={900}
+    overscanRowCount={5}
+    rowCount={results.length}
+    rowRenderer={rowRenderer}
+/>
+
+```
+
+
+When it is not possible to predict the height of the list (because you want it to take the full height), use the `AutoSizer` component from the lib.
