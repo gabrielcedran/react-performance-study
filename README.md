@@ -163,3 +163,60 @@ useCallback is extremelly useful for contexts to prevent users from rerendering 
 p.s useCallback has nothing to do with function's performance (prevent heavy function from being re-executed unnecessarily). It has all to do with `referential equality` that is the main mechanism
 react uses to assess components that need re-rendering.
 
+
+### Data formatting
+
+Even when performance is tweaked with memo / useMemo, there is still the cost of determining when they should be re-executed. 
+In order to squeeze performance even more, whenever possible it is preferable to execute calculations and formattings where the data is being fetched, not when it is about to be displayed.
+
+Example:
+
+```
+...
+<SearchResults 
+    results={results} 
+    onAddToWishList={addToWishList}
+/>
+...
+
+function SearchResultsComponent({results, onAddToWishList}: SearchResultsProps) {
+
+    const totalPrice = useMemo(() => { 
+            return results.reduce((accumulator, product) => {
+            return accumulator + product.price
+        }, 0)
+    }, [results]) // the cost of determining if the data changed is still there.
+
+    return (
+        <div>
+        </div>
+    )
+}
+```
+
+If the total was calculated where the data is fetched, (1) the cost of determing if the totalPrice needed to be recalculated wouldn't be necessary (2) the useMemo wouldn't be necessary at all
+(3) the calculation would only happened when it was indeed necessary.
+
+```
+    async function handleSearch(event: FormEvent) {
+        ...
+        const response = await fetch(`http://localhost:3333/products?q=${search}`)
+        const data = await response.json()
+        
+        const totalPrice = results.reduce((accumulator, product) => {
+                return accumulator + product.price
+            }, 0);
+
+
+        setResults({totalPrice, data});
+    }
+
+    <SearchResults 
+        results={results.data}
+        totalPrice={results.totalPrice} 
+        onAddToWishList={addToWishList}
+    />
+```
+
+The same concept would apply to formatting - if inside the Search results for each item needed to be formatted with its relative currency and pattern.
+
