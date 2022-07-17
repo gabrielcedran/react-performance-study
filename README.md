@@ -220,3 +220,43 @@ If the total was calculated where the data is fetched, (1) the cost of determing
 
 The same concept would apply to formatting - if inside the Search results for each item needed to be formatted with its relative currency and pattern.
 
+
+### Dynamic Import (Code Splitting)
+
+As known as Lazy Loading, dynamic import is a powerful tool to tweak performance and leaves elements to be loaded only when they are in fact going to be used - 
+some parts of the application might be rarely used or used by just a very few users.
+
+When dynamic import is being used, the build will slice lazy load components out of the main bundle file so that they can be loaded only when necessary.
+
+
+Example:
+
+```
+const AddProductToWishList = dynamic<AddProductToWishListProps>(() => { // it is necessary to pass the generic so that typescript can assist with the props the component receives
+    return import('./AddProductToWishList') 
+    .then( // when there is no export default, it is necessary to choose which component to use
+        mod => mod.AddProductToWishList
+    )
+})
+
+...
+
+<AddProductToWishList ... />
+```
+
+In a vanilla react app, it is just a matter of importing lazy from react (`import {lazy} from 'react'`) instead of dynamic. When using a framework with SSR capability, it
+is important to use their implementation.
+
+
+Ps: dynamic import works for virtually anything like css, functions, etc.
+
+Example:
+
+```
+async function showFormattedDate() {
+    const {format} = await import('date-fns'); // this import will only be executed when this function runs.
+
+    format(...)
+}
+
+```
