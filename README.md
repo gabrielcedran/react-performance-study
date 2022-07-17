@@ -141,4 +141,25 @@ In the example above, ComponentOne will only rerender when in fact results chang
 
 ### useCallback
 
+useCallback is used to memoise a function as whole (in comparison, useMemo memoise the function's result instead) and ensure its memory reference does not change.
+
+Like variables, functions are recreated `every time` a component rerenders. If functions are being passed down to children components (props drilling), those children components
+will trigger a rerender cycle as the function's reference will have changed (referential equality).
+
+
+Example:
+```
+  const addToWishList = useCallback((id: number) => {
+    console.log(id);
+  }, []); // the second parameter is the dependency array - when this function must be rerendered.
+```
+
+useCallback is extremelly useful for contexts to prevent users from rerendering unnecessarily.
+
+
+*Special attention needs to be paid to `closure`. In case external variables (outside the function's scope) change but the memoised function is not changed, it will be operating with stale data.*
+
+
+p.s useCallback has nothing to do with function's performance (prevent heavy function from being re-executed unnecessarily). It has all to do with `referential equality` that is the main mechanism
+react uses to assess components that need re-rendering.
 
