@@ -81,4 +81,64 @@ comparison. As a rule of thumb, memo is generally good on:
 It is a good practice to first run into performance issue to try and improve it rather than trying to tweak it preemptively
 
 
+### useMemo
+
+useMemo hook works somewhat similarly to memo. However it can memoise functions' `results`. It is particularly useful (and used) 
+when there is a slow processing function and that function is re-executed every time the component is rerendered but the result does not change.
+
+Unlike memo, useMemo receives a second parameter that signalises when the memoised result needs to be re-calculated (similar to useEffect).
+
+Example:
+
+```
+import { useMemo } from "react";
+
+
+function SearchResultsComponent({results}: SearchResultsProps) {
+
+    const totalPrice = useMemo(() => { 
+            return results.reduce((accumulator, product) => {
+            return accumulator + product.price
+        }, 0)
+    }, [results])
+
+    return (
+        <div>
+        ...
+        </div>
+    )
+}
+```
+
+Besides preventing heavy functions from being executed every rerender cycle, another useful feature useMemo provides is referential equality.
+This referential equality helps children component to avoid unnecessary rerender cycles.
+
+```
+function SearchResultsComponent({results}: SearchResultsProps) {
+
+    const totalPriceMemoised = useMemo(() => { 
+            return results.reduce((accumulator, product) => {
+            return accumulator + product.price
+            }, 0)
+    }, [results])
+
+    const totalPriceNotMemoised = results.reduce(
+        (accumulator, product) => {
+            return accumulator + product.price
+        }, 0)
+
+    return (
+        <div>
+            <ComponentOne totalPrice={totalPriceMemoised}/ >
+            <ComponentTwo totalPrice={totalPriceNotMemoised}/ >
+        </div>
+    )
+}
+```
+
+In the example above, ComponentOne will only rerender when in fact results change. ComponentTwo on the other hand will trigger a rerender every time SearchResultsComponent rerenders.
+
+
+### useCallback
+
 
