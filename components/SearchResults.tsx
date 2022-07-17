@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { ProductItem } from "./ProductItem";
 
-type SearchResults = {
+type SearchResultsProps = {
     results: Array<{
         id: number;
         price: number;
@@ -9,7 +10,7 @@ type SearchResults = {
 
 }
 
-export function SearchResults({results}: SearchResults) {
+function SearchResultsComponent({results}: SearchResultsProps) {
     return (
         <div>
             {results.map(product => {
@@ -20,3 +21,7 @@ export function SearchResults({results}: SearchResults) {
         </div>
     )
 }
+
+export const SearchResults = memo(SearchResultsComponent, (prevProps, nextProps) => {
+    return Object.is(prevProps.results, nextProps.results);
+});
